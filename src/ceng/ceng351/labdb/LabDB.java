@@ -109,6 +109,62 @@ public class LabDB {
     }
 
     public void leave(String studentID) {
+        String key = hash(studentID,globalDepth);
+        Bucket value = buckets.get(key);
+        if(value.getLocalDepth() < globalDepth){
+            this.buckets.get(key).getEntries().remove(studentID);
+        }
+        else if (value.getLocalDepth() == globalDepth){
+            buckets.get(key).getEntries().remove(studentID);
+            if(value.getEntries().size() == 0){
+                if(key.startsWith("1")){
+                    value = buckets.get("0" + key.substring(1));
+                    value.setLocalDepth(value.getLocalDepth()-1);
+                    buckets.remove(key);
+                    buckets.put("1" + key.substring(1), value);
+
+                }
+                else if(key.startsWith("0")){
+                    value = buckets.get("1" + key.substring(1));
+                    value.setLocalDepth(value.getLocalDepth()-1);
+                    buckets.remove(key);
+                    buckets.put("0" + key.substring(1), value);
+
+                }
+            }
+        }
+
+        Set<String> keyS = buckets.keySet();
+        boolean shouldDecrease = true;
+
+        for(String currentKey : keyS){
+            if (buckets.get(currentKey).getLocalDepth() == globalDepth){
+                shouldDecrease = false;
+                break;
+            }
+        }
+
+        if(shouldDecrease){
+           globalDepth--;
+
+            ArrayList<String> keySet = new ArrayList<>();
+            HashMap<String,Bucket> tempbuckets = new HashMap<>();
+
+            for(String currentkey : keyS){
+                keySet.add(currentkey);
+            }
+
+            for(String currentkey: keySet){
+                value = buckets.get(currentkey);
+                if(!tempbuckets.containsKey(currentkey.substring(1))){
+                    tempbuckets.put(currentkey.substring(1),value);
+                }
+            }
+
+            this.buckets = tempbuckets;
+
+        }
+
         
     }
 
