@@ -1,10 +1,7 @@
 package ceng.ceng351.labdb;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 public class LabDB {
 
@@ -68,15 +65,6 @@ public class LabDB {
             key = hash(studentID,globalDepth);
             buckets.get(key).insertEntry(studentID);
 
-            Set<String> keySet = this.buckets.keySet();
-
-            for(String current : keySet){
-                if(current.length() < globalDepth){
-                    Bucket v = buckets.get(current);
-                    System.out.println("current :" + current);
-                }
-            }
-
         }
         else{
             buckets.get(key).insertEntry(studentID);
@@ -96,6 +84,21 @@ public class LabDB {
     public void printLab() {
         System.out.println("Global depth : " + this.globalDepth);
         TreeMap<String,Bucket> map = new TreeMap<>();
+        Set<String> kS = this.buckets.keySet();
+
+        ArrayList<String> keySet = new ArrayList<>();
+        for(String key : kS){
+            keySet.add(key);
+        }
+
+        for(String key : keySet){
+            if(this.buckets.get(key).getLocalDepth()< globalDepth){
+                Bucket bucket = this.buckets.remove(key);
+                this.buckets.put("1" + key, bucket);
+                this.buckets.put("0" + key, bucket);
+            }
+        }
+
         map.putAll(this.buckets);
         map.forEach((key,value) -> System.out.println(key + " : " + "[Local depth:" + value.getLocalDepth() + "]" + value.printEntries()));
     }
