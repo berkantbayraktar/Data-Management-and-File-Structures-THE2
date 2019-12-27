@@ -20,17 +20,6 @@ public class Evaluate {
             labdb.enter("e13");
             labdb.enter("e20");
             labdb.enter("e9");
-            labdb.leave("e32");
-            labdb.leave("e16");
-            labdb.leave("e10");
-            labdb.leave("e9");
-            labdb.leave("e1");
-            labdb.leave("e4");
-            labdb.leave("e12");
-            labdb.leave("e20");
-            labdb.leave("e5");
-            labdb.leave("e21");
-            labdb.leave("e13");
             labdb.printLab();
 
         } catch (Exception e) {
@@ -40,3 +29,4 @@ public class Evaluate {
     }
 
 }
+
