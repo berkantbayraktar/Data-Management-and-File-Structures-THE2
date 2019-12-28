@@ -17,7 +17,6 @@ public class LabDB {
 
         buckets.put("0", new Bucket(1));
         buckets.put("1", new Bucket(1));
-
     }
 
 
@@ -164,14 +163,10 @@ public class LabDB {
             this.buckets = tempbuckets;
 
         }
-
-        
     }
 
     public String search(String studentID) {
         String key = hash(studentID,globalDepth);
-        Set<String> keys = buckets.keySet();
-        System.out.println(keys);
         Bucket bucket = this.buckets.get(key);
         ArrayList<String> entries = bucket.getEntries();
 
@@ -187,22 +182,6 @@ public class LabDB {
     public void printLab() {
         System.out.println("Global depth : " + this.globalDepth);
         TreeMap<String,Bucket> map = new TreeMap<>();
-        /*
-        Set<String> kS = this.buckets.keySet();
-
-        ArrayList<String> keySet = new ArrayList<>();
-        for(String key : kS){
-            keySet.add(key);
-        }
-
-        for(String key : keySet){
-            if(this.buckets.get(key).getLocalDepth()< globalDepth){
-                Bucket bucket = this.buckets.remove(key);
-                this.buckets.put("1" + key, bucket);
-                this.buckets.put("0" + key, bucket);
-            }
-        }*/
-
         map.putAll(this.buckets);
         map.forEach((key,value) -> System.out.println(key + " : " + "[Local depth:" + value.getLocalDepth() + "]" + value.printEntries()));
     }
@@ -210,7 +189,7 @@ public class LabDB {
     public String convertToBinary(String key){
         int keyInt = Integer.parseInt(key);
         String ret = Integer.toBinaryString(keyInt);
-        for(int i = ret.length() ; i < 7 ; i++){
+        for(int i = ret.length() ; i < 32 ; i++){
             ret = "0" + ret;
         }
         return ret;
