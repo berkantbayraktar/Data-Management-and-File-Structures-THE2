@@ -1,7 +1,6 @@
 package ceng.ceng351.labdb;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Bucket {
     private int localDepth;
@@ -27,15 +26,6 @@ public class Bucket {
 
     public void insertEntry(String entry) {
         this.entries.add(entry);
-    }
-
-    public void removeEntry(String entry){
-        for(int i = 0 ; i < this.entries.size() ; i++){
-            if(entry.equals(this.entries.get(i))){
-                this.entries.remove(i);
-                break;
-            }
-        }
     }
 
     public String printEntries(){
