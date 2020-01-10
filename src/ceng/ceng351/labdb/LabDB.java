@@ -22,15 +22,10 @@ public class LabDB {
 
 
     public String hash(String studentID, int depth){
-        //System.out.println("depth : " + depth);
         String key = getNumeric(studentID);
         String binaryKey = convertToBinary(key);
-        //System.out.println("BinaryKey : " + binaryKey);
-        String buckeyKey = binaryKey.substring(binaryKey.length()-depth,binaryKey.length());
-        //System.out.println("Sub : " + buckeyKey);
-
-        return buckeyKey;
-
+        String bucketKey = binaryKey.substring(binaryKey.length()-depth,binaryKey.length());
+        return bucketKey;
     }
 
 
@@ -114,19 +109,15 @@ public class LabDB {
 
 
                 int ldepth = buckets.get(key).getLocalDepth();
-                //System.out.println("local depth : " + ldepth);
-                //System.out.println("key : " +  key);
 
                 for(int i = 0 ; i < Math.pow(2,globalDepth -  ldepth) ; i++){
                     String bin = toBinary(i,globalDepth-ldepth);
-                    //System.out.println("ahaha : " + bin );
+
                     buckets.remove(bin + key.substring(bin.length()));
                     buckets.put(bin + key.substring(bin.length()), new Bucket(ldepth + 1));
                 }
 
                 ldepth++;
-
-                //System.out.println("after local depth : " + ldepth);
 
 
                 if(globalDepth == ldepth){
@@ -224,11 +215,16 @@ public class LabDB {
 
             this.buckets = tempbuckets;
 
+            key = hash(studentID,globalDepth);
+            while(key.startsWith("1") && buckets.get(key).getEntries().size() == 0 && buckets.get("0" + key.substring(1)).getEntries().size() == 0){
+                merge(key);
+                key = hash(studentID,globalDepth);
+            }
+            while(key.startsWith("0") && buckets.get(key).getEntries().size() == 0 && buckets.get("1" + key.substring(1)).getEntries().size() == 0){
+                merge(key);
+                key = hash(studentID,globalDepth);
+            }
         }
-
-        /// CHECK STILL CAN WE MERGE ????
-
-        //merge();
 
         ArrayList<String> keySet = new ArrayList<>();
         keyS = buckets.keySet();
@@ -295,11 +291,25 @@ public class LabDB {
         return studentID.replaceAll("\\D+","");
     }
 
-    public void merge(){
+    public void merge(String key){
+        Bucket value = buckets.get(key);
+
+        if(key.startsWith("1") && buckets.get(key).getEntries().size() == 0 && buckets.get("0" + key.substring(1)).getEntries().size() == 0){
+            value.setLocalDepth(value.getLocalDepth() - 1);
+            buckets.get("0" + key.substring(1)).setLocalDepth(buckets.get("0" + key.substring(1)).getLocalDepth() - 1);
+        }
+        else if(key.startsWith("0") && buckets.get(key).getEntries().size() == 0 && buckets.get("1" + key.substring(1)).getEntries().size() == 0){
+            value.setLocalDepth(value.getLocalDepth() - 1);
+            buckets.get("1" + key.substring(1)).setLocalDepth(buckets.get("1" + key.substring(1)).getLocalDepth() - 1);
+        }
+
+
+
         Set<String> keyS = buckets.keySet();
+        globalDepth--;
+
         ArrayList<String> keySet = new ArrayList<>();
         HashMap<String,Bucket> tempbuckets = new HashMap<>();
-        Bucket value;
 
         for(String currentkey : keyS){
             keySet.add(currentkey);
