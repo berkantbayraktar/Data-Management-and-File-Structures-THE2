@@ -97,7 +97,20 @@ public class LabDB {
                     entries.add(value.getEntries().get(i));
                 }
 
-                entries.add(studentID);
+                boolean alreadyInserted = false;
+                /// check already inserted ?
+
+
+                for(String entry : entries){
+                    if(entry.equals(studentID)){
+                        alreadyInserted = true;
+                    }
+                }
+
+                if(!alreadyInserted){
+                    entries.add(studentID);
+                }
+
 
 
                 int ldepth = buckets.get(key).getLocalDepth();
@@ -132,6 +145,9 @@ public class LabDB {
                         }
                     }
 
+                }
+                if(buckets.get(key).getEntries().size() > this.bucketSize){
+                    enter(studentID);
                 }
 
 
